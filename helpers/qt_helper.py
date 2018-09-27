@@ -14,12 +14,12 @@ def ui_loader(file_name, directory='views/'):
 
     Parameters:
     ===========
-        file_name (string): File name of the UI file to be loaded
-        directory (string): Directory in which the file is located. Default=views/
+        file_name (string)  :   File name of the UI file to be loaded
+        directory (string)  :   Directory in which the file is located. Default=views/
 
     Returns:
     ========
-        QWidget: Loaded UI Widget file
+        QWidget :   Loaded UI Widget file
     """
     ui_file = QFile(directory + file_name)
     ui_file.open(QFile.ReadOnly)
