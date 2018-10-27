@@ -52,7 +52,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QComboBox" name="comboBox"/>
+        <widget class="QComboBox" name="cmb_source_encoding"/>
        </item>
        <item>
         <spacer name="horizontalSpacer">
@@ -93,7 +93,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QComboBox" name="comboBox_2"/>
+        <widget class="QComboBox" name="cmb_dest_encoding"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_2">
