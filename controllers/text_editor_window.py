@@ -58,8 +58,7 @@ class TextEditorWindow(QWidget):
         for i in Constant.SUPPORTED_ENCODINGS:    
            item =  QStandardItem()     
            item.setData(Constant.SUPPORTED_ENCODINGS[i], Qt.DisplayRole)      
-           item.setData(i, Qt.UserRole)           
-           print(item.data(Qt.UserRole))
+           item.setData(i, Qt.UserRole)                      
            self.source_encodings_model.appendRow(item)
 
         self.cmb_source_encoding.setModel(self.source_encodings_model)    
@@ -67,7 +66,10 @@ class TextEditorWindow(QWidget):
         self.setLayout(layout)
         self.connect_signal()
         
+        self.prepare_destination_model("anjal")   
+
         self.on_source_changed(0)
+        
         self.LOGGER.info('Text Editor initialized')
 
     def connect_signal(self):
@@ -154,40 +156,56 @@ class TextEditorWindow(QWidget):
         #     QMessageBox.warning(self, "Error", "Cannot read file " + file_name)
         #     returnbtn_save_file
 
-    def prepare_destination_model(self, source_selection = ""):
-        
+    def prepare_destination_model(self, source_selection = ""):        
         self.dest_encodings_model.clear()
-       
-        if source_selection == "unicode":
-            for i in Constant.SUPPORTED_ENCODINGS:  
-                if i != "unicode": 
-                    item =  QStandardItem(Constant.SUPPORTED_ENCODINGS[i])
-                    item.setData(i, Qt.UserRole)
-                    self.dest_encodings_model.appendRow(item)
-                
-        else:
-            item = QStandardItem("Unicode")
-            item.setData(item)
-            item.setData("unicode", Qt.UserRole)
+        for i in Constant.SUPPORTED_ENCODINGS:            
+            item =  QStandardItem(Constant.SUPPORTED_ENCODINGS[i])
+            item.setData(i, Qt.UserRole)
             self.dest_encodings_model.appendRow(item)
+
+       
+        # if source_selection == "unicode":
+        #     for i in Constant.SUPPORTED_ENCODINGS:  
+        #         if i != "unicode": 
+        #             item =  QStandardItem(Constant.SUPPORTED_ENCODINGS[i])
+        #             item.setData(i, Qt.UserRole)
+        #             self.dest_encodings_model.appendRow(item)
+                
+        # else:
+        #     item = QStandardItem("Unicode")
+        #     item.setData(item)
+        #     item.setData("unicode", Qt.UserRole)
+        #     self.dest_encodings_model.appendRow(item)
         
         self.cmb_dest_encoding.setModel(self.dest_encodings_model)        
 
     def on_source_changed(self, index):
-        source_selection = self.cmb_source_encoding.itemData(index, Qt.UserRole)
-        self.prepare_destination_model(source_selection)   
+        #source_selection = self.cmb_source_encoding.itemData(index, Qt.UserRole)
+        # self.prepare_destination_model(source_selection)   
         self.convert()   
 
     def on_dest_changed(self, index):
         self.convert()   
        
-    def convert(self):
-        #self.input_text_edit
-        #self.input_text_edit   
-        #  
+    def convert(self):        
         source_encoding = self.cmb_source_encoding.itemData(self.cmb_source_encoding.currentIndex(), Qt.UserRole)
         dest_encoding = self.cmb_dest_encoding.itemData(self.cmb_dest_encoding.currentIndex(), Qt.UserRole)
-        conversion_function_to_call = getattr(txt2unicode, source_encoding + "2" + dest_encoding) 
+        txt_to_convert = self.te_input.toPlainText()
 
-        self.te_output.setPlainText(conversion_function_to_call(self.te_input.toPlainText()))
+        if source_encoding != dest_encoding :
+            if dest_encoding != "unicode":
+                if source_encoding != "unicode":
+                    tmp_dest_encoding = "unicode"
+                    intermediate_func = getattr(txt2unicode, source_encoding + "2" + "unicode")
+                    txt_to_convert = intermediate_func(txt_to_convert)
+                    source_encoding = "unicode"
+
+
+            conversion_function_to_call = getattr(txt2unicode, source_encoding + "2" + dest_encoding) 
+            converted_string = conversion_function_to_call(txt_to_convert)
+
+        else:
+            converted_string = txt_to_convert        
+
+        self.te_output.setPlainText(converted_string)
         
